@@ -7,11 +7,36 @@ load_dotenv()
 my_key = os.getenv('MY_KEY')
 genai.configure(api_key=my_key)
 
-st.title("Gemini-student-counsel-Bot : 상다미")
+st.title("Gemini-Bot : 상다미😊")
+
+## 파라미터 바꿔보기
+generation_config = genai.GenerationConfig(temperature=0.5, stop_sequences=["!"], max_output_tokens= 300)
+
+
+safety_settings=[
+        {
+            "category": "HARM_CATEGORY_HARASSMENT",
+            "threshold": "BLOCK_LOW_AND_ABOVE", ## BLOCK_NONE, BLOCK_ONLY_HIGH, BLOCK_MEDIUM_AND_ABOVE, BLOCK_LOW_AND_ABOVE 등이 있다.
+        },
+        {
+            "category": "HARM_CATEGORY_HATE_SPEECH",
+            "threshold": "BLOCK_LOW_AND_ABOVE",
+        },
+        {
+            "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+            "threshold": "BLOCK_LOW_AND_ABOVE",
+        },
+        {
+            "category": "HARM_CATEGORY_DANGEROUS",
+            "threshold": "BLOCK_LOW_AND_ABOVE",
+        },
+    ]
+
+
 
 @st.cache_resource
 def load_model():
-    model = genai.GenerativeModel('gemini-1.5-flash-latest')
+    model = genai.GenerativeModel('gemini-1.5-flash-latest', generation_config=generation_config, safety_settings=safety_settings)
     print("model loaded...")
     return model
 
